@@ -1,4 +1,4 @@
-local class = require '../utils/middleclass'
+local class = require 'utils/middleclass'
 
 local Entity = class 'Entity'
 function Entity:initialize()

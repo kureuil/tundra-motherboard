@@ -10,13 +10,12 @@ function love.load()
 	map = maploader:load('map1')
 	
 	hud_height = 96
-	tile_size = 48
 	-- player = Player:new(tile_size * 3, tile_size * 5, 10)
 end
 
 -- Mise à jour des composantes
 function love.update(dt)
-	-- player:update(dt)
+	map:update(dt)
 end
 
 -- Affichage des composantes

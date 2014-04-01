@@ -1,5 +1,5 @@
-local class = require '../utils/middleclass'
-local Entity = require '../entities/entity'
+local class  = require 'utils/middleclass'
+local Entity = require 'entities/entity'
 
 local Map = class 'Map'
 function Map:initialize(tiles, tile_size)
@@ -11,9 +11,10 @@ end
 -- Fait apparaître un entité sur la map et l'ajoute au
 -- registre des entités à gérer.
 function Map:spawnEntity(entity, x, y)
-	if entity.isInstanceOf(Entity)
-		entity.x = x * self.tile_size
-		entity.y = y * self.tile_size
+	if entity:isInstanceOf(Entity) or entity:isSubclassOf(Entity) then
+		print("spawn process started")
+		entity:setX(x * self.tile_size)
+		entity:setY(y * self.tile_size)
 		entity.spawned = true
 		table.insert(self.entities, entity)
 	else
@@ -25,7 +26,7 @@ end
 -- la map et à l'index 1 sa hauteur.
 function Map:getSize()
 	return {#self.tiles[1], #self.tiles}
-return
+end
 
 function Map:getTile(x, y)
 	return self.map[y][x]
@@ -33,7 +34,7 @@ end
 
 function Map:update(dt)
 	for k=1, #self.entities do
-		entities.update(dt)
+		self.entities[k]:update(dt)
 	end
 end
 
@@ -46,7 +47,7 @@ function Map:draw()
 		end
 	end
 	for k=1, #self.entities do
-		entities:draw()
+		self.entities[k]:draw()
 	end
 end
 
