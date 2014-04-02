@@ -1,9 +1,15 @@
 local class = require 'utils/middleclass'
 
 local Entity = class 'Entity'
+-- Méthode d'initialisation de la classe `Player`
+-- Défini les variables:
+-- * grid_x: destination du joueur sur l'axe des abscisses (en tuiles)
+-- * grid_x: destination du joueur sur l'axe des ordonnées (en tuiles)
 function Entity:initialize()
-	self.x = 0
-	self.y = 0
+	self.x       = 0
+	self.y       = 0
+	self.grid_x  = 0
+	self.grid_y  = 0
 	self.spawned = false
 end
 

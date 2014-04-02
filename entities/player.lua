@@ -12,13 +12,12 @@ local Player = class('Player', MovableEntity)
 -- * grid_x: destination du joueur sur l'axe des ordonnées (en tuiles)
 -- * is_moving: permet de savoir si le joueur est en déplacement
 -- * speed: Vitesse du joueur
-function Player:initialize(x, y, speed)
+function Player:initialize(x, y)
 	MovableEntity.initialize(self)
 	self.x = x
 	self.y = y
 	self.grid_x = x
 	self.grid_y = y
-	self.speed = 10
 end
 
 function Player:setX(new_x)
