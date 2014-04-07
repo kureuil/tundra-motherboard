@@ -1,5 +1,5 @@
 -- On inclut la classe `Player`
-local Player = require 'entities/player'
+local Player    = require 'entities/player'
 local MapLoader = require 'maps/maploader'
 -- Chargement des ressources (maps, sprites, sons, réglages, etc)
 function love.load()

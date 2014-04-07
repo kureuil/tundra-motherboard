@@ -13,6 +13,14 @@ function Entity:initialize()
 	self.spawned = false
 end
 
+function Entity:setX(new_x)
+	self.x = new_x
+end
+
+function Entity:setY(new_y)
+	self.y = new_y
+end
+
 function Entity:update(dt)
 end
 
