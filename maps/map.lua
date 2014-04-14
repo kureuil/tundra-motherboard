@@ -6,7 +6,7 @@ local Player     = require 'entities/player'
 local Map = class 'Map'
 function Map:initialize(screens)
 	self.screens           = screens
-	self.current_screen_id = 1
+	self.current_screen_id = 3
 	self.current_screen    = self.screens[self.current_screen_id]
 	self.tiles             = nil
 	self.tile_size         = self.current_screen.tile_size
