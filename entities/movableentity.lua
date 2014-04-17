@@ -14,6 +14,7 @@ function MovableEntity:initialize()
 	self.dest_y    = 0
 	self.is_moving = false
 	self.speed     = 10
+	self.direction = 0
 end
 
 function MovableEntity:moveTo(shift_x, shift_y)

@@ -2,10 +2,13 @@ return {
 	-- Tableau 1
 	{
 		player = {
-			x = 15,
+			x = 14,
 			y = 5
 		},
 		entities = {
+			soldiers = {
+				{ x = 5, y = 5, direction = 0 }
+			}
 		},
 			tiles = {
 			{000, 001, 000, 000, 000, 000, 000, 000, 000, 000, 000, 000, 001, 000, 000},
@@ -24,7 +27,7 @@ return {
 	-- Tableau 2
 	{
 		player = {
-			x = 15,
+			x = 14,
 			y = 5
 		},
 		entities = {
@@ -46,7 +49,7 @@ return {
 	--Tableau 3 
 	{
 		player = {
-			x = 15,
+			x = 14,
 			y = 5
 		},
 		entities = {
@@ -68,7 +71,7 @@ return {
 	--Tableau 4
 	{
 		player = {
-			x = 15,
+			x = 14,
 			y = 3
 		},
 		entities = {
@@ -90,7 +93,7 @@ return {
 	--Tableau 5 
 	{
 		player = {
-			x = 15,
+			x = 14,
 			y = 5
 		},
 		entities = {

@@ -21,6 +21,18 @@ function Entity:setY(new_y)
 	self.y = new_y
 end
 
+function Entity:getGridX()
+	return math.floor(self.x / map.tile_size)
+end
+
+function Entity:getGridY()
+	return math.floor(self.y / map.tile_size)
+end
+
+function Entity:kill()
+	self.spawned = false
+end
+
 function Entity:update(dt)
 end
 
