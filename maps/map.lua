@@ -51,8 +51,10 @@ end
 function Map:loadEntities()
 	self.entities = {}
 	local clients = self.current_screen.entities
-	for k=1, #clients.soldiers do
-		self:spawnEntity(Soldier:new(), clients.soldiers[k].x, clients.soldiers[k].y)
+	if clients.soldiers ~= nil then
+		for k=1, #clients.soldiers do
+			self:spawnEntity(Soldier:new(), clients.soldiers[k].x, clients.soldiers[k].y)
+		end
 	end
 end
 
@@ -62,7 +64,7 @@ function Map:loadTiles(tiles)
 			print(tiles[x][y])
 			local tile_content = tiles[x][y]
 			if EntityDictionnary[tile_content] then
-				self:spawnEntity(EntityDictionnary[tile_content], x, y)
+				self:spawnEntity(EntityDictionnary[tile_content], y - 1, x - 1)
 			end
 		end
 	end
@@ -71,7 +73,8 @@ end
 function Map:nextScreen()
 	if (self.current_screen_id + 1) <= #self.screens then
 		self.current_screen_id = self.current_screen_id + 1
-		self:loadScreen(self.current_screen_id)
+		self.current_screen = self.screens[self.current_screen_id]
+		self:loadScreen()
 	else
 		self:endingScreen()
 	end
