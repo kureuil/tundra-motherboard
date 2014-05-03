@@ -132,6 +132,8 @@ function Map:update(dt)
 end
 
 function Map:draw()
+	image = love.graphics.newImage( "levels/gfx/screen_"..self.current_screen_id..".jpg" )
+	love.graphics.draw( image, 0, 0 )
 	for y=1, #self.tiles do
 		for x=1, #self.tiles[y] do
 			if self.tiles[y][x] == 1 then
