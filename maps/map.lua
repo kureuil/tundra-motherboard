@@ -15,6 +15,7 @@ function Map:initialize(screens)
 	self.entities          = {}
 	self.player            = {}
 	self.base_path         = nil
+	self.background        = nil
 	self:loadScreen(self.current_screen)
 end
 
@@ -41,6 +42,7 @@ function Map:loadScreen()
 	self:loadEntities()
 	self:loadTiles(self.current_screen.tiles)
 	self.tiles = self.current_screen.tiles
+	self.background = love.graphics.newImage( "maps/levels/gfx/screen_"..self.current_screen_id..".jpg" )
 	self:spawnEntity(
 		Player:new(),
 		self.current_screen.player.x,
@@ -132,8 +134,7 @@ function Map:update(dt)
 end
 
 function Map:draw()
-	image = love.graphics.newImage( "levels/gfx/screen_"..self.current_screen_id..".jpg" )
-	love.graphics.draw( image, 0, 0 )
+	love.graphics.draw( self.background, 0, hud_height )
 	for y=1, #self.tiles do
 		for x=1, #self.tiles[y] do
 			if self.tiles[y][x] == 1 then
