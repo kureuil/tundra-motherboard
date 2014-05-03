@@ -108,7 +108,7 @@ function Map:getEntityOn(x, y)
 	end
 	for k=1, #self.entities do
 		print(self.entities[k])
-		if self.entities[k]:getGridX() == x and self.entities[k]:getGridY() == y then
+		if self.entities[k] ~= nil and self.entities[k]:getGridX() == x and self.entities[k]:getGridY() == y then
 			return self.entities[k]
 		end
 		return false
@@ -117,10 +117,12 @@ end
 
 function Map:update(dt)
 	for k=1, #self.entities do
-		local entity = self.entities[k]
-		entity:update(dt)
-		if entity.spawned == false then
-			self.entities[k] = nil
+		if self.entities[k] ~= nil then
+			local entity = self.entities[k]
+			entity:update(dt)
+			if entity.spawned == false then
+				self.entities[k] = nil
+			end
 		end
 	end
 	self.player:update(dt)
@@ -143,7 +145,9 @@ function Map:draw()
 	print(#self.entities)
 	for k=1, #self.entities do
 		print(self.entities[k])
-		self.entities[k]:draw()
+		if self.entities[k] ~= nil then
+			self.entities[k]:draw()
+		end
 	end
 	self.player:draw()
 end
