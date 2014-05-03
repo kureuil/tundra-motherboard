@@ -11,6 +11,7 @@ function Entity:initialize()
 	self.grid_x  = 0
 	self.grid_y  = 0
 	self.spawned = false
+	self.is_blocking = true
 end
 
 function Entity:setX(new_x)

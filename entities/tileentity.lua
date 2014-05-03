@@ -7,14 +7,13 @@ local TileEntity = class('TileEntity', Entity)
 -- * texture_path: nom du fichier de l'image
 -- * texture: objet image de la texture
 -- * is_blocking: permet de savoir si l'entité bloque les mouvements du joueur
-function TileEntity:initialize(x, y, texture_path)
+function TileEntity:initialize(texture_path)
 	Entity.initialize(self)
-	self.x = x		
-	self.y = y
-	self.texture_path = texture_path
-	-- On charge le fichier image
-	self.texture = love.graphics.newImage(map.base_path..'gfx'..texture_path..'.jpg')
-	self.is_blocking = true
+	if texture_path ~= nil then
+		self.texture_path = texture_path
+		-- On charge le fichier image
+		self.texture = love.graphics.newImage(map.base_path..'gfx'..texture_path..'.jpg')
+	end
 end
 
 -- Fonction draw = fonction affichage des textures de l'entité

@@ -8,6 +8,7 @@ local MovableEntity = class('MovableEntity', Entity)
 -- * dest_y: position actuelle du joueur sur l'axe des ordonnées (en tuiles)
 -- * is_moving: permet de savoir si le joueur est en déplacement
 -- * speed: Vitesse du joueur
+-- * direction : Direction que regarde le joueur ([0 => haut, 1 => droite, 2 => bas, 3 => gauche]) 
 function MovableEntity:initialize()
 	Entity.initialize(self)
 	self.dest_x    = 0

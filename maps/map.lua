@@ -1,8 +1,9 @@
-local class      = require 'utils/middleclass'
-local Entity     = require 'entities/entity'
-local TileEntity = require 'entities/tileentity'
-local Player     = require 'entities/player'
-local Soldier    = require 'entities/soldier'
+local class             = require 'utils/middleclass'
+local Entity            = require 'entities/entity'
+local TileEntity        = require 'entities/tileentity'
+local Player            = require 'entities/player'
+local Soldier           = require 'entities/soldier'
+local EntityDictionnary = require 'maps/entitydictionnary'
 
 local Map = class 'Map'
 function Map:initialize(screens)
@@ -13,6 +14,7 @@ function Map:initialize(screens)
 	self.tile_size         = self.current_screen.tile_size
 	self.entities          = {}
 	self.player            = {}
+	self.base_path         = nil
 	self:loadScreen(self.current_screen)
 end
 
@@ -59,10 +61,8 @@ function Map:loadTiles(tiles)
 		for y=1, #tiles[x] do
 			print(tiles[x][y])
 			local tile_content = tiles[x][y]
-			if tile == 001 then
-				self:spawnEntity(TileEntity, x, y)
-			else
-				
+			if EntityDictionnary[tile_content] then
+				self:spawnEntity(EntityDictionnary[tile_content], x, y)
 			end
 		end
 	end
@@ -103,6 +103,9 @@ function Map:getEntityOn(x, y)
 		return false
 	end
 	print('#self.entities : ' .. #self.entities)
+	if #self.entities == 0 then
+		return false
+	end
 	for k=1, #self.entities do
 		print(self.entities[k])
 		if self.entities[k]:getGridX() == x and self.entities[k]:getGridY() == y then
@@ -137,7 +140,9 @@ function Map:draw()
 			end
 		end
 	end
+	print(#self.entities)
 	for k=1, #self.entities do
+		print(self.entities[k])
 		self.entities[k]:draw()
 	end
 	self.player:draw()

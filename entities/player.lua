@@ -6,33 +6,31 @@ local Player = class('Player', MovableEntity)
 
 -- Méthode d'initialisation de la classe `Player`
 -- Défini les variables:
--- * act_x: position actuelle du joueur sur l'axe des abscisses (en pixels)
--- * act_y: position actuelle du joueur sur l'axe des ordonnées (en pixels)
--- * grid_x: destination du joueur sur l'axe des abscisses (en pixels)
--- * grid_x: destination du joueur sur l'axe des ordonnées (en pixels)
+-- * dest_x: destination du joueur sur l'axe des abscisses (en pixels)
+-- * dest_y: destination du joueur sur l'axe des ordonnées (en pixels)
+-- * speed:  vitesse du joueur
 function Player:initialize(x, y)
 	MovableEntity.initialize(self)
-	self.x         = x
-	self.y         = y
-	self.dest_x    = x
-	self.dest_y    = y
-	self.speed     = 13
+	self.x      = x
+	self.y      = y
+	self.dest_x = x
+	self.dest_y = y
+	self.speed  = 10
 end
 
 function Player:setX(new_x)
-	self.x = new_x
+	self.x      = new_x
 	self.dest_x = new_x
 end
 
 function Player:setY(new_y)
-	self.y = new_y
+	self.y      = new_y
 	self.dest_y = new_y
 end
 
 -- Met à jour le joueur
 function Player:update(dt)
 	MovableEntity.update(self, dt)
-	-- print("Updating player")
 	self:move(dt)
 	if love.keyboard.isDown(" ") then
 		self:stab()
@@ -42,17 +40,15 @@ end
 -- Black magic involved.
 -- Do not edit.
 function Player:move(dt)
-	if love.keyboard.isDown("down") and self.is_moving == false then
-		-- print("Zboub Down")
+	-- On détecte les touches pressées et on agit en conséquence
+	-- Si le joueur est en mouvement, on ne change pas son mouvement
+	if     love.keyboard.isDown("down")  and self.is_moving == false then
 		self:moveDown()
-	elseif love.keyboard.isDown("up") and self.is_moving == false then
-		-- print("Zboub Up")
-		self:moveUp()
-	elseif love.keyboard.isDown("left") and self.is_moving == false then
-		-- print("Zboub Left")
+	elseif love.keyboard.isDown("up")    and self.is_moving == false then
+		self:moveUp() 
+	elseif love.keyboard.isDown("left")  and self.is_moving == false then
 		self:moveLeft()
 	elseif love.keyboard.isDown("right") and self.is_moving == false then
-		-- print("Zboub Right")
 		self:moveRight()
 	end
 
@@ -60,6 +56,7 @@ function Player:move(dt)
 	self.x = self.x - ((self.x - self.dest_x) * self.speed * dt)
 	self.y = self.y - ((self.y - self.dest_y) * self.speed * dt)
 
+	-- On arrondi les valeurs de self.x et self.y
 	if math.floor(self.x) == self.dest_x then
 		self.x = math.floor(self.x)
 	elseif math.ceil(self.x) == self.dest_x then
@@ -72,19 +69,21 @@ function Player:move(dt)
 		self.y = math.ceil(self.y)
 	end
 	
+	-- Si le joueur arrive à destination, le joueur n'est plus en mouvement
 	if self.x == self.dest_x and self.y == self.dest_y then
-		-- print("Zboub")
 		self.is_moving = false
 	end
 
-	print("Player.x :      " .. self.x)
-	print("Player.dest_x : " .. self.dest_x)
-	print("Player.grid_x : " .. self:getGridX())
-	print("Player.y :      " .. self.y)
-	print("Player.dest_y : " .. self.dest_y)
-	print("Player.grid_y : " .. self:getGridY())
+	-- print("Player.x :      " .. self.x)
+	-- print("Player.dest_x : " .. self.dest_x)
+	-- print("Player.grid_x : " .. self:getGridX())
+	-- print("Player.y :      " .. self.y)
+	-- print("Player.dest_y : " .. self.dest_y)
+	-- print("Player.grid_y : " .. self:getGridY())
 end
 
+-- On tourne le joueur dans la direction voulue, on vérifie que la case sur
+-- laquelle il veut se rendre existe et on le défini comme étant en mouvement
 function Player:moveDown()
 	local new_y = self.dest_y + map.tile_size
 	self.direction = 2
@@ -101,7 +100,6 @@ function Player:moveUp()
 		self.is_moving = true
 	end
 end
-
 function Player:moveLeft()
 	local new_x = self.dest_x - map.tile_size
 	self.direction = 3
@@ -110,7 +108,6 @@ function Player:moveLeft()
 		self.is_moving = true
 	end
 end
-
 function Player:moveRight()
 	local new_x = self.dest_x + map.tile_size
 	self.direction = 1
@@ -121,6 +118,7 @@ function Player:moveRight()
 end
 
 -- NINJAAAAAA
+-- Attaque du joueur, permet d'éliminer l'entité se tenant devant lui
 function Player:stab()
 	local x = self:getGridX()
 	local y = self:getGridY()
@@ -144,8 +142,11 @@ end
 
 -- Dessine l'instance du joueur
 function Player:draw()
+	-- On récupère les couleurs déjà définies
 	local r, g, b, a = love.graphics.getColor()
+	-- On défini la couleur à blanc
 	love.graphics.setColor(255, 255, 255)
+	-- On dessine le joueur
 	love.graphics.rectangle("fill", self.x, self.y + hud_height, map.tile_size, map.tile_size)
 	-- Begin debug
 	love.graphics.setColor(0, 0, 255)
@@ -159,6 +160,7 @@ function Player:draw()
 		love.graphics.rectangle("fill", self.x - map.tile_size, self.y + hud_height, map.tile_size, map.tile_size)
 	end
 	-- End debug
+	-- On remet les couleurs comme elles étaient
 	love.graphics.setColor(r, g, b, a)
 end
 
