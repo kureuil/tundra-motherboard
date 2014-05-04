@@ -6,11 +6,11 @@ local Entity = class 'Entity'
 -- * grid_x: destination du joueur sur l'axe des abscisses (en tuiles)
 -- * grid_x: destination du joueur sur l'axe des ordonnées (en tuiles)
 function Entity:initialize()
-	self.x       = 0
-	self.y       = 0
-	self.grid_x  = 0
-	self.grid_y  = 0
-	self.spawned = false
+	self.x           = 0
+	self.y           = 0
+	self.grid_x      = 0
+	self.grid_y      = 0
+	self.spawned     = false
 	self.is_blocking = true
 end
 
