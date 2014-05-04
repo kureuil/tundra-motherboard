@@ -56,7 +56,7 @@ function Player:canMove()
 
 	local entity = map:getEntityOn(x, y)
 
-	if entity and entity.is_blocking == true then
+	if Entity and Entity.is_blocking == true then
 		self.dest_x = self.x
 		self.dest_y = self.y
 	end
