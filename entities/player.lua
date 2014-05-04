@@ -39,7 +39,8 @@ function Player:update(dt)
 		self:stab()
 	end
 end
-function Player:can.move()
+
+function Player:canMove()
 	local x = self:getGridX()
 	local y = self:getGridY()
 
@@ -55,11 +56,12 @@ function Player:can.move()
 
 	local entity = map:getEntityOn(x, y)
 
-	if entity.is_blocking == true then
-		self.dest_x=self.x
-		self.dest_y=self.y
+	if entity and entity.is_blocking == true then
+		self.dest_x = self.x
+		self.dest_y = self.y
 	end
-	
+end
+
 -- Black magic involved.
 -- Do not edit.
 function Player:move(dt)
@@ -74,7 +76,9 @@ function Player:move(dt)
 	elseif love.keyboard.isDown("right") and self.is_moving == false then
 		self:moveRight()
 	end
-	self:can.move
+
+	self:canMove()
+	
 	-- Déplace petit à petit le joueur de `{x, y}` vers `dest_{x, y}`
 	self.x = self.x - ((self.x - self.dest_x) * self.speed * dt)
 	self.y = self.y - ((self.y - self.dest_y) * self.speed * dt)
