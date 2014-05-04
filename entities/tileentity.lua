@@ -2,7 +2,7 @@ local class  = require 'utils/middleclass'
 local Entity = require 'entities/entity'
 
 local TileEntity = class('TileEntity', Entity)
--- Méthode d'initialisation de la classe `Player`
+-- Méthode d'initialisation de la classe `TileEntity`
 -- Défini les variables:
 -- * texture_path: nom du fichier de l'image
 -- * texture: objet image de la texture
