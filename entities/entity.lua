@@ -1,7 +1,7 @@
 local class = require 'utils/middleclass'
 
 local Entity = class 'Entity'
--- Méthode d'initialisation de la classe `Player`
+-- Méthode d'initialisation de la classe `Entity'
 -- Défini les variables:
 -- * grid_x: destination du joueur sur l'axe des abscisses (en tuiles)
 -- * grid_x: destination du joueur sur l'axe des ordonnées (en tuiles)
