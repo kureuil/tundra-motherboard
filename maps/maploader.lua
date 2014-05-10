@@ -3,6 +3,8 @@ local Map    = require 'maps/map'
 local Player = require 'entities/player'
 
 local MapLoader = class 'MapLoader'
+-- Fonction d'initialisation de la class MapLoader.
+-- Défini la variable path qui est le chemin ou le MapLoader ira chercher les maps.
 function MapLoader:initialize()
 	self.path = 'maps/levels/'
 end
@@ -18,4 +20,5 @@ function MapLoader:load(level)
 	return instance
 end
 
+-- Retourne la classe MapLoader
 return MapLoader

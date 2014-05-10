@@ -4,11 +4,7 @@ local MovableEntity = require 'entities/movableentity'
 -- Classe `Player`
 local Player = class('Player', MovableEntity)
 
--- Méthode d'initialisation de la classe `Player`
--- Défini les variables:
--- * dest_x: destination du joueur sur l'axe des abscisses (en pixels)
--- * dest_y: destination du joueur sur l'axe des ordonnées (en pixels)
--- * speed:  vitesse du joueur
+-- Méthode d'initialisation de la classe `Player`, utilisée pour modéliser le joueur.
 function Player:initialize(x, y)
 	MovableEntity.initialize(self)
 	self.x      = x
@@ -18,20 +14,20 @@ function Player:initialize(x, y)
 	self.speed  = 10
 end
 
-
-	
-
+-- Surcharge de la méthode `Entity:setX`
 function Player:setX(new_x)
 	self.x      = new_x
 	self.dest_x = new_x
 end
 
+-- Surcharge de la méthode `Entity:setY`
 function Player:setY(new_y)
 	self.y      = new_y
 	self.dest_y = new_y
 end
 
 -- Met à jour le joueur
+-- Fait bouger le joueur et déclenche son attaque si la touche barre espace est activée.
 function Player:update(dt)
 	MovableEntity.update(self, dt)
 	self:move(dt)
@@ -40,9 +36,13 @@ function Player:update(dt)
 	end
 end
 
+-- Vérifie si le joueur peut se déplacer dans la direction voulue.
+-- Ne fonctionne pas.
 function Player:canMove()
 	local x = self:getGridX()
 	local y = self:getGridY()
+
+	print("player can move")
 
 	if self.direction == 0 then
 		y = y - 1
@@ -53,10 +53,17 @@ function Player:canMove()
 	elseif self.direction == 3 then
 		x = x - 1
 	end
+	-- print(y)
+	-- print(x)
 
 	local entity = map:getEntityOn(x, y)
 
-	if entity and entity.is_blocking == true then
+	-- print(entity)
+
+	-- Si le joueur ne peut pas bouger, on le rend immobile en
+	-- assignant à ses coordonnées de destination ses coordonnées actuelles.
+	if entity and entity.is_blocking then
+		-- print("player can't move")
 		self.dest_x = self.x
 		self.dest_y = self.y
 	end
@@ -64,6 +71,7 @@ end
 
 -- Black magic involved.
 -- Do not edit.
+-- Fonction permettant de faire bouger le joueur.
 function Player:move(dt)
 	-- On détecte les touches pressées et on agit en conséquence
 	-- Si le joueur est en mouvement, on ne change pas son mouvement
@@ -77,6 +85,7 @@ function Player:move(dt)
 		self:moveRight()
 	end
 
+	-- On vérifie si le joueur peut bouger.
 	self:canMove()
 	
 	-- Déplace petit à petit le joueur de `{x, y}` vers `dest_{x, y}`
@@ -84,6 +93,7 @@ function Player:move(dt)
 	self.y = self.y - ((self.y - self.dest_y) * self.speed * dt)
 
 	-- On arrondi les valeurs de self.x et self.y
+	-- Pour être sûr que le joueur atteigne la case suivante.
 	if math.floor(self.x) == self.dest_x then
 		self.x = math.floor(self.x)
 	elseif math.ceil(self.x) == self.dest_x then
@@ -144,7 +154,6 @@ function Player:moveRight()
 	end
 end
 
--- NINJAAAAAA
 -- Attaque du joueur, permet d'éliminer l'entité se tenant devant lui
 function Player:stab()
 	local x = self:getGridX()
@@ -160,8 +169,10 @@ function Player:stab()
 		x = x - 1
 	end
 
+	-- Récupère l'entité se tenant devant lui
 	local entity = map:getEntityOn(x, y)
 
+	-- Si elle existe, on l'élimine
 	if entity then
 		entity:kill()
 	end
@@ -176,6 +187,7 @@ function Player:draw()
 	-- On dessine le joueur
 	love.graphics.rectangle("fill", self.x, self.y + hud_height, map.tile_size, map.tile_size)
 	-- Begin debug
+	-- Dessine un carré bleu représentant la direction du joueur et la case qu'il peut attaquer
 	love.graphics.setColor(0, 0, 255)
 	if self.direction == 0 then
 		love.graphics.rectangle("fill", self.x, self.y + hud_height - map.tile_size, map.tile_size, map.tile_size)
@@ -191,4 +203,5 @@ function Player:draw()
 	love.graphics.setColor(r, g, b, a)
 end
 
+-- Retourne la classe Player
 return Player

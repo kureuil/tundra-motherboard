@@ -15,12 +15,12 @@ function love.load()
 	-- player = Player:new(tile_size * 3, tile_size * 5, 10)
 end
 
--- Mise à jour des composantes
+-- À chaque frame on met à jour la map
 function love.update(dt)
 	map:update(dt)
 end
 
--- Affichage des composantes
+-- Puis on la dessine
 function love.draw()
 	map:draw()
 end

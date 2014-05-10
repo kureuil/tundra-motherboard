@@ -6,6 +6,16 @@ local Soldier           = require 'entities/soldier'
 local EntityDictionnary = require 'maps/entitydictionnary'
 
 local Map = class 'Map'
+-- Fonction d'initialisation de la map. Créé les variables :
+-- * screens: liste des tableaux de la map
+-- * current_screen_id: ID du tableau actuel
+-- * current_screen: objet du tableau actuel
+-- * tiles: matrice contenant les tuiles du tableau
+-- * tile_size: taille (en pixels) des tuiles
+-- * entities: tableau contenant toutes les entités chargées (sauf le joueur)
+-- * player: instace du joueur actuel
+-- * base_path: localisation (sur le disque dur) de la map. Utilisé pour charger les ressources.
+-- * background: image utilisée en fond
 function Map:initialize(screens)
 	self.screens           = screens
 	self.current_screen_id = 1
@@ -16,17 +26,14 @@ function Map:initialize(screens)
 	self.player            = {}
 	self.base_path         = nil
 	self.background        = nil
+	-- Charge le premier tableau
 	self:loadScreen(self.current_screen)
 end
 
 -- Fait apparaître un entité sur la map et l'ajoute au
 -- registre des entités à gérer.
 function Map:spawnEntity(entity, x, y)
-	print(entity)
-	print(x)
-	print(y)
 	if entity:isInstanceOf(Entity) or entity:isSubclassOf(Entity) then
-		print("spawn process started")
 		entity:setX(x * self.tile_size)
 		entity:setY(y * self.tile_size)
 		entity.spawned = true
@@ -38,6 +45,9 @@ function Map:spawnEntity(entity, x, y)
 	end
 end
 
+-- Fonction chargeant le tableau actuel de la map.
+-- Charge les entités, puis les tuiles et enfin le background.
+-- Fait ensuite apparaître le joueur.
 function Map:loadScreen()
 	self:loadEntities()
 	self:loadTiles(self.current_screen.tiles)
@@ -50,6 +60,9 @@ function Map:loadScreen()
 	)
 end
 
+-- Fonction chargeant les entités du tableau actuel.
+-- Commence par vider le registre, puis parcourt la liste des entités fournie
+-- par la map.
 function Map:loadEntities()
 	self.entities = {}
 	local clients = self.current_screen.entities
@@ -60,18 +73,23 @@ function Map:loadEntities()
 	end
 end
 
+-- Fonction chargeant les tuiles de la map.
+-- Parcourt la matrice fournie par la map, parcourt d'abord dans l'axe des ordonnées puis
+-- dans l'axe des abscisses.
+-- Instancie ensuite le contenu de la tuile en utilisant le registre global des entités.
 function Map:loadTiles(tiles)
-	for x=1, #tiles do
-		for y=1, #tiles[x] do
-			print(tiles[x][y])
-			local tile_content = tiles[x][y]
+	for y=1, #tiles do
+		for x=1, #tiles[y] do
+			local tile_content = tiles[y][x]
 			if EntityDictionnary[tile_content] then
-				self:spawnEntity(EntityDictionnary[tile_content], y - 1, x - 1)
+				self:spawnEntity(EntityDictionnary[tile_content], x - 1, y - 1)
 			end
 		end
 	end
 end
 
+-- Fonction chargeant le tableau suivant.
+-- Si le tableau suivant n'existe pas, afficher les crédits (non implémenté).
 function Map:nextScreen()
 	if (self.current_screen_id + 1) <= #self.screens then
 		self.current_screen_id = self.current_screen_id + 1
@@ -82,6 +100,7 @@ function Map:nextScreen()
 	end
 end
 
+-- Fonction affichant les crédits
 function Map:endingScreen()
 	
 end
@@ -97,20 +116,28 @@ function Map:getTiles()
 	return self.screens[self.current_screen]
 end
 
+-- Fonction retournant le contenu de la tuile aux coordonnées (x, y)
 function Map:getTile(x, y)
 	return self.map[y][x]
 end
 
+-- Fonction retournant l'entité présente aux coordonnées (x, y)
+-- Commence par vérifier que nles coordonnées sont valides et que des entités sont présentes.
+-- Parcourt ensuite le registre des entités chargées et retourne la première ayant des coordonnées
+-- correspondantes.
 function Map:getEntityOn(x, y)
 	local size = self:getSize()
 	
 	if x < 0 or x > size[1] or y < 0 or y > size[2] then
 		return false
 	end
-	print('#self.entities : ' .. #self.entities)
+
+	-- print(#self.entities)
+
 	if #self.entities == 0 then
 		return false
 	end
+
 	for k=1, #self.entities do
 		print(self.entities[k])
 		if self.entities[k] ~= nil and self.entities[k]:getGridX() == x and self.entities[k]:getGridY() == y then
@@ -120,6 +147,9 @@ function Map:getEntityOn(x, y)
 	end
 end
 
+-- Fontion mettant à jour la map.
+-- Parcourt le registre des entités chargées, met à jour ces dernières et supprime celles qui ne sont plus.
+-- Met ensuite à jour le joueur.
 function Map:update(dt)
 	for k=1, #self.entities do
 		if self.entities[k] ~= nil then
@@ -133,6 +163,8 @@ function Map:update(dt)
 	self.player:update(dt)
 end
 
+-- Dessine la map et son background.
+-- Appelle la fonction `draw` de chaque entité chargée, puis la fonction `draw` du joueur.
 function Map:draw()
 	love.graphics.draw( self.background, 0, hud_height )
 	for y=1, #self.tiles do
@@ -148,9 +180,7 @@ function Map:draw()
 			end
 		end
 	end
-	print(#self.entities)
 	for k=1, #self.entities do
-		print(self.entities[k])
 		if self.entities[k] ~= nil then
 			self.entities[k]:draw()
 		end
@@ -158,4 +188,5 @@ function Map:draw()
 	self.player:draw()
 end
 
+-- Retourne la classe Map
 return Map

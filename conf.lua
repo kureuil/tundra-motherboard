@@ -1,6 +1,6 @@
 function love.conf(t)
 	io.stdout:setvbuf("no")
-	t.console = true
+	t.console = false
 	t.window.title = "Tundra Motherboard"
 
 	t.window.height = 672
