@@ -61,9 +61,7 @@ function Soldier:draw()
 	love.graphics.rectangle("fill", self.x, self.y + hud_height, map.tile_size, map.tile_size)
 	love.graphics.setColor(255, 0, 0, 100)
 	for k=1, #self.vision do
-		if self.vision[k].x == map.player:getGridX() and self.vision[k].y == map.player:getGridY() then
-			love.graphics.rectangle("fill", self.vision[k].x * map.tile_size, self.vision[k].y * map.tile_size + hud_height, map.tile_size, map.tile_size)
-		end
+		love.graphics.rectangle("fill", self.vision[k].x * map.tile_size, self.vision[k].y * map.tile_size + hud_height, map.tile_size, map.tile_size)
 	end
 	-- On rétablit les valeurs des couleurs
 	love.graphics.setColor(r, g, b, a)
