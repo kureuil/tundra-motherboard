@@ -5,6 +5,7 @@ local Soldier = class('Soldier', MovableEntity)
 
 -- Soldat, actuellement assimilé à une plante verte servant juste à décorer.
 function Soldier:initialize()
+	MovableEntity.initialize(self)
 	self.vision = {}
 end
 
@@ -59,7 +60,7 @@ function Soldier:draw()
 	local r, g, b, a = love.graphics.getColor()
 	love.graphics.setColor(255, 0, 0)
 	love.graphics.rectangle("fill", self.x, self.y + hud_height, map.tile_size, map.tile_size)
-	love.graphics.setColor(255, 0, 0, 100)
+	love.graphics.setColor(255, 0, 0, 50)
 	for k=1, #self.vision do
 		love.graphics.rectangle("fill", self.vision[k].x * map.tile_size, self.vision[k].y * map.tile_size + hud_height, map.tile_size, map.tile_size)
 	end

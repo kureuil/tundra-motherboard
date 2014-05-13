@@ -17,15 +17,18 @@ local Map = class 'Map'
 -- * base_path: localisation (sur le disque dur) de la map. Utilisé pour charger les ressources.
 -- * background: image utilisée en fond
 function Map:initialize(screens)
-	self.screens           = screens
-	self.current_screen_id = 1
-	self.current_screen    = self.screens[self.current_screen_id]
-	self.tiles             = nil
-	self.tile_size         = self.current_screen.tile_size
-	self.entities          = {}
-	self.player            = {}
-	self.base_path         = nil
-	self.background        = nil
+	self.screens               = screens
+	self.current_screen_id     = 1
+	self.current_screen        = self.screens[self.current_screen_id]
+	self.tiles                 = nil
+	self.tile_size             = self.current_screen.tile_size
+	self.entities              = {}
+	self.player                = {}
+	self.base_path             = nil
+	self.background            = nil
+	self.state                 = 'game'
+	self.current_screen_height = 0
+	self.current_screen_width  = 0
 	-- Charge le premier tableau
 	self:loadScreen(self.current_screen)
 end
@@ -49,9 +52,12 @@ end
 -- Charge les entités, puis les tuiles et enfin le background.
 -- Fait ensuite apparaître le joueur.
 function Map:loadScreen()
+	self.state = 'game'
 	self:loadEntities()
 	self:loadTiles(self.current_screen.tiles)
 	self.tiles = self.current_screen.tiles
+	self.current_screen_height = self:getSize()[2] * self.tile_size
+	self.current_screen_width = self:getSize()[1] * self.tile_size
 	self.background = love.graphics.newImage( "maps/levels/gfx/screen_"..self.current_screen_id..".jpg" )
 	self:spawnEntity(
 		Player:new(),
@@ -102,7 +108,11 @@ end
 
 -- Fonction affichant les crédits
 function Map:endingScreen()
-	
+	self.state = 'ending-screen'
+end
+
+function Map:gameOver()
+	self.state = 'game-over'
 end
 
 -- Retourne une table contenant à l'index 0 la largeur de
@@ -151,21 +161,35 @@ end
 -- Parcourt le registre des entités chargées, met à jour ces dernières et supprime celles qui ne sont plus.
 -- Met ensuite à jour le joueur.
 function Map:update(dt)
-	for k=1, #self.entities do
-		if self.entities[k] ~= nil then
-			local entity = self.entities[k]
-			entity:update(dt)
-			if entity.spawned == false then
-				self.entities[k] = nil
+	if self.state == 'game' then
+		for k=1, #self.entities do
+			if self.entities[k] ~= nil then
+				local entity = self.entities[k]
+				entity:update(dt)
+				if entity.spawned == false then
+					self.entities[k] = nil
+				end
 			end
 		end
+		self.player:update(dt)
+	elseif self.state == 'game-over' or self.state == 'ending-screen' then
+		if love.keyboard.isDown (' ', 'return') then
+			if self.state == 'ending-screen' then
+				self.current_screen_id = 1
+				self.current_screen = self.screens[self.current_screen_id]
+			end
+				self:loadScreen()
+		elseif love.keyboard.isDown('escape') then
+			love.event.quit()
+		end
 	end
-	self.player:update(dt)
 end
 
 -- Dessine la map et son background.
 -- Appelle la fonction `draw` de chaque entité chargée, puis la fonction `draw` du joueur.
 function Map:draw()
+	local r, g, b, a = love.graphics.getColor()
+	local font_buffer = love.graphics.getFont()
 	love.graphics.draw( self.background, 0, hud_height )
 	for y=1, #self.tiles do
 		for x=1, #self.tiles[y] do
@@ -186,6 +210,28 @@ function Map:draw()
 		end
 	end
 	self.player:draw()
+	if self.state == 'game-over' then
+		love.graphics.setColor(0, 0, 0, 175)
+		love.graphics.rectangle("fill", 0, 0 + hud_height, self.current_screen_width, self.current_screen_height)
+		love.graphics.setFont(love.graphics.newFont(36))
+		love.graphics.setColor(255, 255, 255)
+		love.graphics.print('GAME OVER', 250, 180)
+		love.graphics.setFont(love.graphics.newFont(18))
+		love.graphics.print('Appuyez sur espace ou entrée pour réessayer', 140, 400)
+		love.graphics.print('Appuyez sur Echap pour quitter', 300, 427)
+	elseif self.state == 'ending-screen' then
+		love.graphics.setColor(0, 0, 0, 175)
+		love.graphics.rectangle("fill", 0, 0 + hud_height, self.current_screen_width, self.current_screen_height)
+		love.graphics.setFont(love.graphics.newFont(36))
+		love.graphics.setColor(255, 255, 255)
+		love.graphics.print('Vous avez gagné !', 200, 180)
+		love.graphics.setFont(love.graphics.newFont(18))
+		love.graphics.print('Merci d\'avoir joué', 284, 373)
+		love.graphics.print('Appuyez sur espace ou entrée pour recommencer', 140, 400)
+		love.graphics.print('Appuyez sur Echap pour quitter', 244, 427)
+	end
+	love.graphics.setFont(font_buffer)
+	love.graphics.setColor(r, g, b, a)
 end
 
 -- Retourne la classe Map
