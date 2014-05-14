@@ -115,6 +115,10 @@ function Map:gameOver()
 	self.state = 'game-over'
 end
 
+function Map:pause()
+	self.state = 'pause'
+end
+
 -- Retourne une table contenant à l'index 0 la largeur de
 -- la map et à l'index 1 sa hauteur.
 function Map:getSize()
@@ -171,6 +175,9 @@ function Map:update(dt)
 				end
 			end
 		end
+		if love.keyboard.isDown ('escape') then
+			map:pause()
+		end
 		self.player:update(dt)
 	elseif self.state == 'game-over' or self.state == 'ending-screen' then
 		if love.keyboard.isDown (' ', 'return') then
@@ -180,6 +187,12 @@ function Map:update(dt)
 			end
 				self:loadScreen()
 		elseif love.keyboard.isDown('escape') then
+			love.event.quit()
+		end
+	elseif self.state == 'pause' then
+		if love.keyboard.isDown('escape') then
+			self.state = 'game'
+		elseif love.keyboard.isDown('q') then
 			love.event.quit()
 		end
 	end
@@ -217,8 +230,8 @@ function Map:draw()
 		love.graphics.setColor(255, 255, 255)
 		love.graphics.print('GAME OVER', 250, 180)
 		love.graphics.setFont(love.graphics.newFont(18))
-		love.graphics.print('Appuyez sur espace ou entrée pour réessayer', 140, 400)
-		love.graphics.print('Appuyez sur Echap pour quitter', 300, 427)
+		love.graphics.print('Appuyez sur espace ou entrée pour réessayer', 170, 400)
+		love.graphics.print('Appuyez sur Echap pour quitter', 200, 427)
 	elseif self.state == 'ending-screen' then
 		love.graphics.setColor(0, 0, 0, 175)
 		love.graphics.rectangle("fill", 0, 0 + hud_height, self.current_screen_width, self.current_screen_height)
@@ -229,6 +242,15 @@ function Map:draw()
 		love.graphics.print('Merci d\'avoir joué', 284, 373)
 		love.graphics.print('Appuyez sur espace ou entrée pour recommencer', 140, 400)
 		love.graphics.print('Appuyez sur Echap pour quitter', 244, 427)
+	elseif self.state == 'pause' then
+		love.graphics.setColor(0, 0, 0, 50)
+		love.graphics.rectangle("fill", 0, 0 + hud_height, self.current_screen_width, self.current_screen_height)
+		love.graphics.setFont(love.graphics.newFont(48))
+		love.graphics.setColor(255, 255, 255)
+		love.graphics.print('PAUSE', 270, 180)
+		love.graphics.setFont(love.graphics.newFont(18))
+		love.graphics.print('Rappuyez sur Echap pour reprendre', 190, 400)
+		love.graphics.print('Appuyez sur la lettre Q pour quitter', 192, 427)
 	end
 	love.graphics.setFont(font_buffer)
 	love.graphics.setColor(r, g, b, a)
